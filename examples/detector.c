@@ -16,6 +16,21 @@ int init(char * datacfg, char * cfgfile, char * weightfile, REQS * req)
     return 1;
 }
 
+int maximum(int x, int y)
+{
+    int max = x > y ? x : y;
+    return max;
+}
+
+int s_a_resize(int orig)
+{
+    int new=640;
+    new = orig < 320 ? 416 : new;
+    new = orig > 1000 ? 672 : new;
+    new = orig > 1500 ? 832 : new;
+    return new;
+}
+
 void f_detector(REQS * req, char *filename)
 {
     srand(2222222);
@@ -23,32 +38,34 @@ void f_detector(REQS * req, char *filename)
     char buff[256];
     char *input = buff;
     float nms=.45;
-    while(1){
-        if (filename) {
-            strncpy(input, filename, 256);
-        } else {
-            printf("Enter Image Path: ");
-            fflush(stdout);
-            input = fgets(input, 256, stdin);
-            if (!input) return;
-            strtok(input, "\n");
-        }
-        image im    = load_image_color(input,0,0);
-        image sized = letterbox_image(im, req->mynet->w, req->mynet->h);
-        layer l     = req->mynet->layers[req->mynet->n-1];
-        float *X    = sized.data;
-        time        = what_time_is_it_now();
-        network_predict(req->mynet, X);
-        int nboxes = 0;
-        detection *dets = get_network_boxes(req->mynet, im.w, im.h, req->thresh, .5, 0, 1, &nboxes);
-        if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
-        draw_detections_f(im, dets, nboxes, req->thresh, req->names, req->alphabet, l.classes);
-        free_detections(dets, nboxes);
-        save_image(im, "predictions");
-        free_image(im);
-        free_image(sized);
-        if (filename) break;
+    if (filename) {
+        strncpy(input, filename, 256);
+    } else {
+        printf("Enter Image Path: ");
+        fflush(stdout);
+        input = fgets(input, 256, stdin);
+        if (!input) return;
+        strtok(input, "\n");
     }
+    image im    = load_image_color(input,0,0);
+    printf(" >> image loaded\n");
+    int max = maximum(im.w, im.h);
+    int new_s = s_a_resize(max);
+    resize_network(req->mynet, new_s, new_s);
+    printf(" >> self-adaptive scale adjustment\n");
+    image sized = letterbox_image(im, req->mynet->w, req->mynet->h);
+    layer l     = req->mynet->layers[req->mynet->n-1];
+    float *X    = sized.data;
+    time        = what_time_is_it_now();
+    network_predict(req->mynet, X);
+    int nboxes = 0;
+    detection *dets = get_network_boxes(req->mynet, im.w, im.h, req->thresh, .5, 0, 1, &nboxes);
+    if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+    draw_detections_f(im, dets, nboxes, req->thresh, req->names, req->alphabet, l.classes, 0);
+    free_detections(dets, nboxes);
+    save_image(im, "predictions");
+    free_image(im);
+    free_image(sized);
 }
 
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear)

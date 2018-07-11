@@ -189,7 +189,7 @@ void forward_network(network *netp)
 {
 #ifdef GPU
     if(netp->gpu_index >= 0){
-        forward_network_gpu(netp);   
+        forward_network_gpu(netp);
         return;
     }
 #endif
@@ -214,7 +214,7 @@ void update_network(network *netp)
 {
 #ifdef GPU
     if(netp->gpu_index >= 0){
-        update_network_gpu(netp);   
+        update_network_gpu(netp);
         return;
     }
 #endif
@@ -264,7 +264,7 @@ void backward_network(network *netp)
 {
 #ifdef GPU
     if(netp->gpu_index >= 0){
-        backward_network_gpu(netp);   
+        backward_network_gpu(netp);
         return;
     }
 #endif
@@ -349,7 +349,7 @@ void set_batch_network(network *net, int b)
         if(net->layers[i].type == DECONVOLUTIONAL){
             layer *l = net->layers + i;
             cudnnSetTensor4dDescriptor(l->dstTensorDesc, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, 1, l->out_c, l->out_h, l->out_w);
-            cudnnSetTensor4dDescriptor(l->normTensorDesc, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, 1, l->out_c, 1, 1); 
+            cudnnSetTensor4dDescriptor(l->normTensorDesc, CUDNN_TENSOR_NCHW, CUDNN_DATA_FLOAT, 1, l->out_c, 1, 1);
         }
 #endif
     }
@@ -485,7 +485,7 @@ void visualize_network(network *net)
         if(l.type == CONVOLUTIONAL){
             prev = visualize_convolutional_layer(l, buff, prev);
         }
-    } 
+    }
 }
 
 void top_predictions(network *net, int k, int *index)
@@ -610,7 +610,7 @@ matrix network_predict_data_multi(network *net, data test, int n)
         }
     }
     free(X);
-    return pred;   
+    return pred;
 }
 
 matrix network_predict_data(network *net, data test)
@@ -633,7 +633,7 @@ matrix network_predict_data(network *net, data test)
         }
     }
     free(X);
-    return pred;   
+    return pred;
 }
 
 void print_network(network *net)
@@ -675,7 +675,7 @@ void compare_networks(network *n1, network *n2, data test)
     printf("%5d %5d\n%5d %5d\n", a, b, c, d);
     float num = pow((abs(b - c) - 1.), 2.);
     float den = b + c;
-    printf("%f\n", num/den); 
+    printf("%f\n", num/den);
 }
 
 float network_accuracy(network *net, data d)

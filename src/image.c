@@ -309,7 +309,7 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
     }
 }
 
-void draw_detections_f(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes)
+void draw_detections_f(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int scale)
 {
     int i,j;
     int p_id=0;
@@ -332,10 +332,18 @@ void draw_detections_f(image im, detection *dets, int num, float thresh, char **
             rgb[2]      = blue;
             box b       = dets[i].bbox;
 
-            int left  = (b.x-b.w*.66/2.)*im.w;
-            int right = (b.x+b.w*.66/2.)*im.w;
-            int top   = (b.y-b.h/2.)*im.h;
-            int bot   = top+right-left;
+            int left, right, top, bot;
+            if (scale) {
+                left  = (b.x-b.w*.66/2.)*im.w;
+                right = (b.x+b.w*.66/2.)*im.w;
+                top   = (b.y-b.h/2.)*im.h;
+                bot   = top+right-left;
+            } else {
+                left  = (b.x-b.w/2.)*im.w;
+                right = (b.x+b.w/2.)*im.w;
+                top   = (b.y-b.h/2.)*im.h;
+                bot   = (b.y+b.h/2.)*im.h;
+            }
 
             if(left < 0) left = 0;
             if(right > im.w-1) right = im.w-1;
