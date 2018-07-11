@@ -7,9 +7,18 @@
 
 ### 3. After modifications in Makefile, type "make -j20" or something else to build the lib file, the number after the letter "j" depends on your machine performance.
 
-### 4. If there are no error on your screen, congratulations, type "gcc ./face_detector.c -g -o facedetector ./libdarknet.so" to build the executable file.
+### 4. If there are no error on your screen, congratulations, type
+'''shell
+
+gcc ./face_detector.c -g -o facedetector ./libdarknet.so
+
+'''
+to build the executable file.
+
 
 ### 5. Try >>
 '''shell
+
 ./facedetector single path_to_your_image_to_be_test
+
 '''
