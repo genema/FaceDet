@@ -7,7 +7,7 @@ If you want to use pre-built shared lib, you need a machine with a competent GPU
 ### 2.
 Else, you have to build your own shared lib. Modify the parameters in "Makefile" consider your situation, the build parameters including GPU, CUDNN, OPENCV, and OPENMP.
 
-###3.
+### 3.
 After modifications in Makefile, type
 ```shell
 make -j20
