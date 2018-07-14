@@ -26,8 +26,9 @@ int s_a_resize(int orig)
 {
     int new=640;
     new = orig < 320 ? 416 : new;
-    new = orig > 1000 ? 672 : new;
-    new = orig > 1500 ? 832 : new;
+    new = orig > 800 ? 672 : new;
+    new = orig > 1000 ? 832 : new;
+    new = orig > 1200 ? 1024 : new;
     return new;
 }
 
@@ -49,10 +50,10 @@ void f_detector(REQS * req, char *filename)
     }
     image im    = load_image_color(input,0,0);
     printf(" >> image loaded\n");
-    int max = maximum(im.w, im.h);
-    int new_s = s_a_resize(max);
+    int max     = maximum(im.w, im.h);
+    int new_s   = s_a_resize(max);
     resize_network(req->mynet, new_s, new_s);
-    printf(" >> self-adaptive scale adjustment\n");
+    printf(" >> self-adaptive scale adjustment: %d\n", new_s);
     image sized = letterbox_image(im, req->mynet->w, req->mynet->h);
     layer l     = req->mynet->layers[req->mynet->n-1];
     float *X    = sized.data;
