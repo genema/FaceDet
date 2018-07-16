@@ -309,7 +309,7 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
     }
 }
 
-void draw_detections_f(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int scale)
+void draw_detections_f(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, const float * scale)
 {
     int i,j;
     int p_id=0;
@@ -321,8 +321,8 @@ void draw_detections_f(image im, detection *dets, int num, float thresh, char **
             sprintf(labelstr, "%d", p_id);
             p_id ++;
             printf("%d: %.0f%%\n", p_id-1, dets[i].prob[0]*100);
-            int width   = im.h * .004;
-            int offset  = 1 * 19950417 % classes;
+            int width   = im.h * .005;
+            int offset  = 55 * 19950417 % classes;
             float red   = get_color(2,offset,classes);
             float green = get_color(1,offset,classes);
             float blue  = get_color(0,offset,classes);
@@ -333,9 +333,9 @@ void draw_detections_f(image im, detection *dets, int num, float thresh, char **
             box b       = dets[i].bbox;
 
             int left, right, top, bot;
-            if (scale) {
-                left  = (b.x-b.w*.66/2.)*im.w;
-                right = (b.x+b.w*.66/2.)*im.w;
+            if (scale[0]) {
+                left  = (b.x-b.w*.9/2.)*im.w;
+                right = (b.x+b.w*.9/2.)*im.w;
                 top   = (b.y-b.h/2.)*im.h;
                 bot   = top+right-left;
             } else {
@@ -344,7 +344,14 @@ void draw_detections_f(image im, detection *dets, int num, float thresh, char **
                 top   = (b.y-b.h/2.)*im.h;
                 bot   = (b.y+b.h/2.)*im.h;
             }
-
+/*
+            if ((right - left) * (right - left) > im.h * im.w * scale[1]) {
+                left  = (b.x-b.w*.5/2.)*im.w;
+                right = (b.x+b.w*.4/2)*im.w;
+                top   = (b.y-b.h/2.)*im.h;
+                bot   = top+right-left;
+            }
+*/
             if(left < 0) left = 0;
             if(right > im.w-1) right = im.w-1;
             if(top < 0) top = 0;

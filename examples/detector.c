@@ -22,13 +22,19 @@ int maximum(int x, int y)
     return max;
 }
 
+int minimum(int x, int y)
+{
+    int min = x > y ? y : x;
+    return min;
+}
+
 int s_a_resize(int orig)
 {
     int new=640;
     new = orig < 320 ? 416 : new;
-    new = orig > 800 ? 672 : new;
-    new = orig > 1000 ? 832 : new;
-    new = orig > 1200 ? 1024 : new;
+    new = orig > 600 ? 672 : new;
+    new = orig > 800 ? 832 : new;
+    new = orig > 1000 ? 1280 : new;
     return new;
 }
 
@@ -50,8 +56,9 @@ void f_detector(REQS * req, char *filename)
     }
     image im    = load_image_color(input,0,0);
     printf(" >> image loaded\n");
-    int max     = maximum(im.w, im.h);
-    int new_s   = s_a_resize(max);
+    int new_s;
+    if (im.w/im.h > 1.5 || im.w/im.h < .6) new_s = s_a_resize(maximum(im.w, im.h));
+    else new_s = s_a_resize(minimum(im.w, im.h));
     resize_network(req->mynet, new_s, new_s);
     printf(" >> self-adaptive scale adjustment: %d\n", new_s);
     image sized = letterbox_image(im, req->mynet->w, req->mynet->h);
@@ -62,9 +69,9 @@ void f_detector(REQS * req, char *filename)
     int nboxes = 0;
     detection *dets = get_network_boxes(req->mynet, im.w, im.h, req->thresh, .5, 0, 1, &nboxes);
     if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
-    draw_detections_f(im, dets, nboxes, req->thresh, req->names, req->alphabet, l.classes, 0);
+    draw_detections_f(im, dets, nboxes, req->thresh, req->names, req->alphabet, l.classes, req->scale);
     free_detections(dets, nboxes);
-    save_image(im, "predictions");
+    save_image(im, "output");
     free_image(im);
     free_image(sized);
 }
@@ -666,7 +673,7 @@ void test_detector(char *datacfg, char *cfgfile, char *weightfile, char *filenam
         detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
         //printf("%d\n", nboxes);
         //if (nms) do_nms_obj(boxes, probs, l.w*l.h*l.n, l.classes, nms);
-        if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+//        if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
         draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
         free_detections(dets, nboxes);
         if(outfile){

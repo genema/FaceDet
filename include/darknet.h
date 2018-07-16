@@ -604,6 +604,7 @@ typedef struct{
     network * mynet;
     char ** names;
     image ** alphabet;
+    float scale[2];
     float thresh, iou_thresh, nms;
 } REQS;
 
@@ -739,7 +740,7 @@ data load_all_cifar10();
 box_label *read_boxes(char *filename, int *n);
 box float_to_box(float *f, int stride);
 void draw_detections(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes);
-void draw_detections_f(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, int scale);
+void draw_detections_f(image im, detection *dets, int num, float thresh, char **names, image **alphabet, int classes, const float * scale);
 matrix network_predict_data(network *net, data test);
 image **load_alphabet();
 image get_network_image(network *net);
