@@ -1,6 +1,7 @@
 #                            Guidance
 ###                            V1.0 20180709
 ## It is recommended to use GPU for faster detecting.
+![avatar](data/example5.jpg)
 ### 1.
 If you want to use pre-built shared lib, you need a machine with a competent GPU, equipped with cudnn 5, OpenCV 3.
 
@@ -26,4 +27,4 @@ Try
 ```shell
 ./facedetector single path_to_your_image_to_be_test threshold
 ```
-![avatar](data/example5.jpg)
+
