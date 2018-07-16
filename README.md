@@ -26,3 +26,4 @@ Try
 ```shell
 ./facedetector single path_to_your_image_to_be_test threshold
 ```
+![avatar](data/example5.jpg)
