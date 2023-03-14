@@ -1,6 +1,5 @@
-#                            Guidance
-###                            V1.0 20180709
-## It is recommended to use GPU for faster detecting.
+#                            Guidance 20180709
+* It is recommended to use GPU for faster detection.
 ![avatar](example3.jpg)
 ![avatar](example4.jpg)
 ![avatar](data/example5.jpg)
